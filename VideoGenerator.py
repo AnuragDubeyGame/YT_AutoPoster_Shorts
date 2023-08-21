@@ -2,57 +2,68 @@ from gtts import gTTS
 from mutagen.mp3 import MP3
 import numpy as np
 import cv2
-from moviepy.editor import VideoFileClip, AudioFileClip, clips_array
+import os
+import random
+from moviepy.editor import VideoFileClip, AudioFileClip, VideoClip, concatenate_videoclips
 
-def create_colored_screen_video(mp3_duration, output_filename, color_rgb, target_aspect_ratio):
-    # Define video properties
-    fps = 30
-    frame_height = 480  # Set a fixed frame height
-    frame_width = int(frame_height * target_aspect_ratio)
+def get_random_video(base_videos_folder):
+    video_files = [f for f in os.listdir(base_videos_folder) if f.lower().endswith(('.mp4', '.avi', '.mkv', '.mov'))]
+    if not video_files:
+        raise ValueError("No video files found in the base_videos_folder")
 
-    total_frames = int(fps * mp3_duration)
+    random_video_filename = random.choice(video_files)
+    return os.path.join(base_videos_folder, random_video_filename)
 
-    # Create a VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    video_writer = cv2.VideoWriter(output_filename, fourcc, fps, (frame_width, frame_height))
-
-    # Create colored frames and write to the video
-    color_bgr = color_rgb[::-1]  # Convert RGB to BGR
-    for _ in range(total_frames):
-        frame = np.ones((frame_height, frame_width, 3), dtype=np.uint8) * color_bgr
-        video_writer.write(frame)
-
-    # Release the video writer
-    video_writer.release()
-
-def merge_audio_video(audio_filename, video_filename, output_filename):
-    audio_clip = AudioFileClip(audio_filename)
-    video_clip = VideoFileClip(video_filename)
+def delete_output_video(filename):
+    try:
+        os.remove(filename)
+        print(f"Deleted {filename}")
+    except OSError as e:
+        print("Error:", e)
+        
+def create_video_with_background(audio_duration, base_video_path, output_filename):
+    audio_clip = AudioFileClip(mp3_filename)
+    base_video_clip = VideoFileClip(base_video_path)
     
-    final_clip = video_clip.set_audio(audio_clip)
-    final_clip.write_videofile(output_filename, codec="libx264")
+    # Set the video duration to match the audio duration
+    base_video_clip = base_video_clip.subclip(0, audio_duration)
 
-fact = "Mars has 80% of Earth's gravity"
-tts = gTTS(text=fact, lang="en")
+    final_video_clip = base_video_clip.set_audio(audio_clip)
+    final_video_clip.write_videofile(output_filename, codec="libx264")
 
-# Save the generated speech as an MP3 file
-mp3_filename = "fact.mp3"
-tts.save(mp3_filename)
 
-# Get the duration of the generated MP3 file
-mp3 = MP3(mp3_filename)
-duration = mp3.info.length
 
-# Specify the RGB value for the colored frame (e.g., black)
-black_rgb = (25, 245, 225)
+def crop_video_to_audio_duration(input_video_filename, output_video_filename, audio_duration):
+    video_clip = VideoFileClip(input_video_filename)
+    cropped_video_clip = video_clip.subclip(0, audio_duration)
+    cropped_video_clip.write_videofile(output_video_filename, codec="libx264")
 
-# Specify the target aspect ratio (9:16)
-target_aspect_ratio = 9 / 16.0
+if __name__ == "__main__":
+    fact = "The average human brain has about 86 billion neurons."
+    tts = gTTS(text=fact, lang="en")
 
-# Create the colored screen video
-output_video_filename = "output_video.mp4"
-create_colored_screen_video(duration, output_video_filename, black_rgb, target_aspect_ratio)
+    # Save the generated speech as an MP3 file
+    mp3_filename = "fact.mp3"
+    tts.save(mp3_filename)
 
-# Merge the audio and video
-output_merged_filename = "merged_video.mp4"
-merge_audio_video(mp3_filename, output_video_filename, output_merged_filename)
+    # Get the duration of the generated MP3 file
+    mp3 = MP3(mp3_filename)
+    audio_duration = mp3.info.length
+
+    # Specify the target aspect ratio (9:16)
+    target_aspect_ratio = 9 / 16.0
+
+    # Get a random video from the "BaseVideos" folder
+    base_videos_folder = "BaseVideos"
+    random_base_video = get_random_video(base_videos_folder)
+
+    # Create the video with background
+    output_video_filename = "output_video.mp4"
+    create_video_with_background(audio_duration, random_base_video, output_video_filename)
+
+    # Crop the video to match the audio duration
+    cropped_output_filename = "cropped_output_video.mp4"
+    crop_video_to_audio_duration(output_video_filename, cropped_output_filename, audio_duration)
+
+    # Delete the intermediate output videos
+    delete_output_video(output_video_filename)
