@@ -1,4 +1,12 @@
 import subprocess
+import os
+
+def delete_output_video(filename):
+    try:
+        os.remove(filename)
+        print(f"Deleted {filename}")
+    except OSError as e:
+        print("Error:", e)
 
 def run_script(script_name):
     try:
@@ -10,3 +18,5 @@ def run_script(script_name):
 run_script("VideoGenerator.py")
 run_script("srtGenerator.py")
 run_script("ytUploader.py")
+delete_output_video("cropped_output_video.mp4")
+delete_output_video("output_video_with_subtitles.mp4")
