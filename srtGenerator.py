@@ -21,7 +21,7 @@ def overlay_subtitles(input_video_path, output_video_path, subtitles_file_path):
     ffmpeg_cmd = [
         "ffmpeg",
         "-i", input_video_path,
-        "-vf", f"subtitles={subtitles_file_path}",  # Overlay subtitles
+         "-vf", f"subtitles={subtitles_file_path}", # Overlay subtitles
         "-c:a", "copy",  # Copy audio stream
         output_video_path
     ]
@@ -30,11 +30,11 @@ def overlay_subtitles(input_video_path, output_video_path, subtitles_file_path):
     subprocess.run(ffmpeg_cmd, shell=True)
 
 if __name__ == "__main__":
-    input_video_path = "MainVideo.mp4"
+    input_video_path = "cropped_output_video.mp4"
     output_video_path = "output_video_with_subtitles.mp4"
     subtitles_file_path = "subtitlesText.srt"
     
     overlay_subtitles(input_video_path, output_video_path, subtitles_file_path)
 
     # Remove the temporary subtitle file on Windows
-    # os.remove(subtitles_file_path)
+    os.remove(subtitles_file_path)
