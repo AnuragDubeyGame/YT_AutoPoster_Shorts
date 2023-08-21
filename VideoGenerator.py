@@ -21,13 +21,25 @@ def RetrieveDataFromDB():
    cursor = collection.find()
    first_document = cursor.next()
 
-   document_id = ObjectId(first_document["_id"])
+#    document_id = ObjectId(first_document["_id"])
 #    result = collection.delete_one({'_id': document_id})
 #    if result.deleted_count == 1:
 #        print("Document deleted successfully : ",document_id)
 #    else:
 #        print("Document not found.")
    client.close()
+   facts_value = first_document.get("Facts")
+
+   if facts_value is not None:
+        try:
+            # Write the value to a new file named "TitleArg.txt"
+            with open("TitleArg.txt", "w") as f:
+                f.write(facts_value)
+        except Exception as e:
+            print("Error writing to TitleArg.txt:", e)
+   else:
+        print("Error: 'Facts' key not found in first_document.")
+
    return first_document["Facts"]
 
 def get_random_video(base_videos_folder):
@@ -90,3 +102,5 @@ if __name__ == "__main__":
 
     # Delete the intermediate output videos
     delete_output_video(output_video_filename)
+
+
