@@ -1,10 +1,34 @@
+import os
+import cv2
+import random
+import requests
+import numpy as np
 from gtts import gTTS
 from mutagen.mp3 import MP3
-import numpy as np
-import cv2
-import os
-import random
+from dotenv import load_dotenv
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 from moviepy.editor import VideoFileClip, AudioFileClip, VideoClip, concatenate_videoclips
+
+load_dotenv()
+DBurl = "mongodb+srv://factboyuniverse:Factboy123@factsdatabasecluster.ej0bjql.mongodb.net/"
+
+def RetrieveDataFromDB():
+   print("\t\t Fetching Facts From DB... \t\t")
+   client = MongoClient(DBurl)
+   db = client['FactsDB']
+   collection = db['factsCollection']
+   cursor = collection.find()
+   first_document = cursor.next()
+
+   document_id = ObjectId(first_document["_id"])
+#    result = collection.delete_one({'_id': document_id})
+#    if result.deleted_count == 1:
+#        print("Document deleted successfully : ",document_id)
+#    else:
+#        print("Document not found.")
+   client.close()
+   return first_document["Facts"]
 
 def get_random_video(base_videos_folder):
     video_files = [f for f in os.listdir(base_videos_folder) if f.lower().endswith(('.mp4', '.avi', '.mkv', '.mov'))]
@@ -31,16 +55,15 @@ def create_video_with_background(audio_duration, base_video_path, output_filenam
     final_video_clip = base_video_clip.set_audio(audio_clip)
     final_video_clip.write_videofile(output_filename, codec="libx264")
 
-
-
 def crop_video_to_audio_duration(input_video_filename, output_video_filename, audio_duration):
     video_clip = VideoFileClip(input_video_filename)
     cropped_video_clip = video_clip.subclip(0, audio_duration)
     cropped_video_clip.write_videofile(output_video_filename, codec="libx264")
 
 if __name__ == "__main__":
-    fact = "The average human brain has about 86 billion neurons."
+    fact = "Did You Know, " + RetrieveDataFromDB()
     tts = gTTS(text=fact, lang="en")
+    print(fact)
 
     # Save the generated speech as an MP3 file
     mp3_filename = "fact.mp3"
