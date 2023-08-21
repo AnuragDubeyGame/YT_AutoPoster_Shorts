@@ -21,7 +21,7 @@ def overlay_subtitles(input_video_path, output_video_path, subtitles_file_path):
     ffmpeg_cmd = [
         "ffmpeg",
         "-i", input_video_path,
-         "-vf", f"subtitles={subtitles_file_path}", # Overlay subtitles
+        "-vf", f"subtitles=subtitlesText.srt:force_style='Alignment=10,{subtitles_file_path}",  # Overlay subtitles at the center of the video
         "-c:a", "copy",  # Copy audio stream
         output_video_path
     ]
