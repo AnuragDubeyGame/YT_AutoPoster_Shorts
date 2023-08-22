@@ -50,14 +50,11 @@ def upload_youtube_short(client_secrets_file, video_file_path, title, descriptio
             print(f"Uploaded {int(status.progress() * 100)}%")
 
     print(f"Video upload successful! Video ID: {response['id']}")
-    delete_output_video(video_file_path)
-    delete_output_video("fact.mp3")
-    delete_output_video("TitleArg.txt")
     print("Successfully Deleted the Uploaded Video")
 
 client_secrets_file = 'Credentials\client_secret_568046631541-ud9oskv4tv2n3i723ci60dlu5bp21ug2.apps.googleusercontent.com.json'
-video_file_path = 'output_video_with_subtitles.mp4'
-description = ''
+video_file_path = 'RandomFacts_YTShort.mp4'
+description = '#shorts #short #viralshorts '
 tags = []
 title = "Random Facts, That You will love to Hear!"
 
