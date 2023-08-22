@@ -102,5 +102,3 @@ if __name__ == "__main__":
 
     # Delete the intermediate output videos
     delete_output_video(output_video_filename)
-
-
