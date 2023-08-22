@@ -31,7 +31,7 @@ def overlay_subtitles(input_video_path, output_video_path, subtitles_file_path):
 
 if __name__ == "__main__":
     input_video_path = "cropped_output_video.mp4"
-    output_video_path = "output_video_with_subtitles.mp4"
+    output_video_path = "RandomFacts_YTShort.mp4"
     subtitles_file_path = "subtitlesText.srt"
     
     overlay_subtitles(input_video_path, output_video_path, subtitles_file_path)
