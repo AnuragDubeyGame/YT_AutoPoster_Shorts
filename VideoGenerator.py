@@ -11,22 +11,22 @@ from bson.objectid import ObjectId
 from moviepy.editor import VideoFileClip, AudioFileClip, VideoClip, concatenate_videoclips
 
 load_dotenv()
-DBurl = "mongodb+srv://factboyuniverse:<pass>@factsdatabasecluster.ej0bjql.mongodb.net/"
+DBurl = "mongodb+srv://factboyuniverse:Factboy123@factsdatabasecluster.ej0bjql.mongodb.net/"
 
 def RetrieveDataFromDB():
    print("\t\t Fetching Facts From DB... \t\t")
    client = MongoClient(DBurl)
-   db = client['FactsDB']
-   collection = db['factsCollection']
+   db = client['YT_FACT_DB']
+   collection = db['Yt-Facts_Collection']
    cursor = collection.find()
    first_document = cursor.next()
 
-#    document_id = ObjectId(first_document["_id"])
-#    result = collection.delete_one({'_id': document_id})
-#    if result.deleted_count == 1:
-#        print("Document deleted successfully : ",document_id)
-#    else:
-#        print("Document not found.")
+   document_id = ObjectId(first_document["_id"])
+   result = collection.delete_one({'_id': document_id})
+   if result.deleted_count == 1:
+       print("Document deleted successfully : ",document_id)
+   else:
+       print("Document not found.")
    client.close()
    facts_value = first_document.get("Facts")
 
@@ -74,7 +74,7 @@ def crop_video_to_audio_duration(input_video_filename, output_video_filename, au
 
 if __name__ == "__main__":
     fact = "Did You Know, " + RetrieveDataFromDB()
-    tts = gTTS(text=fact, lang="en")
+    tts = gTTS(text=fact, lang="en", tld="us", lang_check=False)
     print(fact)
 
     # Save the generated speech as an MP3 file
