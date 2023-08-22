@@ -57,8 +57,8 @@ def upload_youtube_short(client_secrets_file, video_file_path, title, descriptio
 
 client_secrets_file = 'Credentials\client_secret_568046631541-ud9oskv4tv2n3i723ci60dlu5bp21ug2.apps.googleusercontent.com.json'
 video_file_path = 'output_video_with_subtitles.mp4'
-description = '#Shorts\n #short\n This is the ultimate spot to listen interesting Facts!'
-tags = ['RandomFacts', 'factechz', 'shorts', 'short']
+description = ''
+tags = []
 title = "Random Facts, That You will love to Hear!"
 
-upload_youtube_short(client_secrets_file, video_file_path, title, description, tags)
+# upload_youtube_short(client_secrets_file, video_file_path, title, description, tags)
