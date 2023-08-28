@@ -11,7 +11,7 @@ from bson.objectid import ObjectId
 from moviepy.editor import VideoFileClip, AudioFileClip, VideoClip, concatenate_videoclips
 
 load_dotenv()
-DBurl = "mongodb+srv://factboyuniverse:Factboy123@factsdatabasecluster.ej0bjql.mongodb.net/"
+DBurl = "mongodb+srv://factboyuniverse:<pass>@factsdatabasecluster.ej0bjql.mongodb.net/"
 
 def RetrieveDataFromDB():
    print("\t\t Fetching Facts From DB... \t\t")
